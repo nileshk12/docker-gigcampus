@@ -7,12 +7,6 @@ echo "Starting entrypoint script..."
 echo "Current user:"
 id
 
-# Check permissions and directory existence
-echo "Checking permissions and directory structure..."
-ls -la /var/www/storage
-ls -la /var/www/storage/logs
-ls -la /var/www/bootstrap/cache
-
 # Ensure correct permissions for storage and cache directories
 echo "Setting correct permissions..."
 chmod -R 775 /var/www/storage /var/www/bootstrap/cache
@@ -40,15 +34,39 @@ echo "Clearing Laravel cache..."
 php /var/www/artisan config:clear
 php /var/www/artisan cache:clear
 
+which mysql
+ls -l $(which mysql)
+
+# Create database if it doesn't exist
+echo "Creating database if it doesn't exist..."
+mysql -h"$DB_HOST" -u"$DB_USERNAME" -p"$DB_PASSWORD" --ssl=0 -e "CREATE DATABASE IF NOT EXISTS $DB_DATABASE;"
+
+echo "Testing database connectivity..."
+php -r "
+try {
+    \$dbh = new PDO('mysql:host=${DB_HOST};port=${DB_PORT};dbname=${DB_DATABASE}', '${DB_USERNAME}', '${DB_PASSWORD}');
+    echo \"Connected successfully to MySQL and selected database ${DB_DATABASE}.\n\";
+    \$stmt = \$dbh->query('SHOW TABLES');
+    echo \"Tables in ${DB_DATABASE}:\n\";
+    while (\$row = \$stmt->fetch(PDO::FETCH_ASSOC)) {
+        \$table = array_values(\$row)[0];
+        echo \"- {\$table}\n\";
+    }
+} catch (PDOException \$e) {
+    echo \"Connection failed: \" . \$e->getMessage() . \"\n\";
+    exit(1);
+}
+"
+
 # Run migrations if needed
 if [ -f /var/www/artisan ]; then
+    echo "Waiting for database to be fully ready..."
+    sleep 5
     echo "Running migrations..."
     php /var/www/artisan migrate --force
 else
     echo "Artisan file not found. Skipping migrations."
 fi
-
-echo "Entrypoint script completed. Starting PHP-FPM..."
 
 # Start PHP-FPM
 exec php-fpm
