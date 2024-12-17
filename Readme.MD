@@ -112,3 +112,15 @@ For e.g to check logs for app container do
 docker logs 077a7ff54fad
 
 To check if the application is working you can run localhost:8000 to check if the application is working
+
+To terminate the docker containers
+
+docker compose down
+
+Output will be like this 
+docker compose down
+[+] Running 4/4
+ ✔ Container gigcampus-nginx-1        Removed                                                                                             0.6s 
+ ✔ Container gigcampus-app-1          Removed                                                                                             0.6s 
+ ✔ Container gigcampus-db-1           Removed                                                                                             1.6s 
+ ✔ Network gigcampus_laravel-network  Removed                                                                                             0.3s 
