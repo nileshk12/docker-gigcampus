@@ -55,6 +55,7 @@ Made changes to config/logging.php file in line 46-57
             'days' => 14,
         ],
 
+I have also created an empty file under storage/logs/laravel.log
 
 To build the Docker image and run the docker containers run the below command:
 
