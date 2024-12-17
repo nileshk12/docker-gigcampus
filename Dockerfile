@@ -19,6 +19,7 @@ RUN apk add --no-cache \
     shadow \
     bash \
     nano \
+    mysql-client \
     && docker-php-ext-configure gd --with-freetype --with-jpeg=/usr/include/ \
     && docker-php-ext-install gd pdo pdo_mysql zip pcntl
 
@@ -33,7 +34,7 @@ RUN addgroup -g ${PGID} appgroup && \
 COPY --chown=appuser:appgroup . .
 
 # Run composer install to install dependencies
-RUN composer install --no-dev --optimize-autoloader
+RUN composer install --optimize-autoloader
 
 # Ensure storage and bootstrap cache directories exist with proper permissions
 RUN mkdir -p /var/www/storage/logs /var/www/bootstrap/cache && \
