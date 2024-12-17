@@ -6,7 +6,10 @@ You need to have this dockerfile and all its dependencies including nginx/defaul
 
 Note: I made changes to the config/database.php file
 
+
+
 Line 1-32 
+
 <?php
 
 use Illuminate\Support\Str;
@@ -55,11 +58,16 @@ Made changes to config/logging.php file in line 46-57
             'days' => 14,
         ],
 
+
 I have also created an empty file under storage/logs/laravel.log
+
 
 To build the Docker image and run the docker containers run the below command:
 
+
 docker compose up --build -d
+
+
 
 the output will be as below:
 [+] Building 2.4s (19/19) FINISHED                                                                                                         docker:desktop-linux
@@ -94,21 +102,31 @@ the output will be as below:
  ✔ Container gigcampus-app-1          Started                                                                                                              2.8s 
  ✔ Container gigcampus-nginx-1        Started                                                                                                              1.2s 
 
+
 To check if containers are running
+
 docker ps
+
 Output should be like this 
                  
+
 CONTAINER ID   IMAGE           COMMAND                  CREATED          STATUS         PORTS                  NAMES
 03ec1a1eabf0   nginx:alpine    "/docker-entrypoint.…"   7 seconds ago    Up 5 seconds   0.0.0.0:8000->80/tcp   gigcampus-nginx-1
 077a7ff54fad   gigcampus-app   "wait-for-it.sh db:3…"   9 seconds ago    Up 6 seconds   9000/tcp               gigcampus-app-1
 3185cee9ccae   mysql:5.7       "docker-entrypoint.s…"   10 seconds ago   Up 6 seconds   3306/tcp, 33060/tcp    gigcampus-db-1
 
+
 If container failed it will be in exit state, to check use below command
+
 docker ps -a
 
+
 To check logs of docker containers
+
 docker logs (container id)
+
 For e.g to check logs for app container do 
+
 docker logs 077a7ff54fad
 
 To check if the application is working you can run localhost:8000 to check if the application is working
